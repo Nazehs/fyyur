@@ -30,7 +30,6 @@
 <script src="https://kit.fontawesome.com/af77674fe5.js"></script>
 <script src="/static/js/libs/modernizr-2.8.2.min.js"></script>
 <script src="/static/js/libs/moment.min.js"></script>
-<script type="text/javascript" src="/static/js/script.js" defer></script>
 <!--[if lt IE 9]><script src="/static/js/libs/respond-1.4.2.min.js"></script><![endif]-->
 <!-- /scripts -->
 </head>
@@ -117,6 +116,36 @@
   <script>window.jQuery || document.write('<script type="text/javascript" src="/static/js/libs/jquery-1.11.1.min.js"><\/script>')</script>
   <script type="text/javascript" src="/static/js/libs/bootstrap-3.1.1.min.js" defer></script>
   <script type="text/javascript" src="/static/js/plugins.js" defer></script>
+  <script type="text/javascript" src="/static/js/script.js" defer></script>
+
+  <script type=text/javascript>
+    console.log('{{ request.endpoint }}');
+    $(document).ready(function () {
+      console.log("ready");
+      $("#delete-artist").on("click", function () {
+        var artistId = $(this).data("id");
+        $.ajax({
+          type: "DELETE",
+          url: "/artists/" + artistId,
+          success: function () {
+            window.location.href = "/artists";
+          },
+        });
+      });
+      $("#delete-venue").on("click", function () {
+        const id  = $(this).data("id");
+        console.log(id);
+        $.ajax({
+          type: "DELETE",
+          url: "/venues/" + id,
+          success: function () {
+          },
+        });
+      });
+    });
+
+    
+  </script>
 
 </body>
 </html>
