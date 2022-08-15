@@ -121,26 +121,20 @@
   <script type=text/javascript>
     console.log('{{ request.endpoint }}');
     $(document).ready(function () {
-      console.log("ready");
       $("#delete-artist").on("click", function () {
-        var artistId = $(this).data("id");
-        $.ajax({
-          type: "DELETE",
-          url: "/artists/" + artistId,
-          success: function () {
-            window.location.href = "/artists";
-          },
-        });
+        const artistId = $(this).data("id");
+        fetch("/artists/" + artistId, {
+          method: "DELETE"
+        }).then(function (response) {
+          window.location.href = "/"});
       });
+      
       $("#delete-venue").on("click", function () {
         const id  = $(this).data("id");
-        console.log(id);
-        $.ajax({
-          type: "DELETE",
-          url: "/venues/" + id,
-          success: function () {
-          },
-        });
+        fetch("/venues/" + id, {
+          method: "DELETE"
+        }).then(function (response) {
+          window.location.href = "/"});
       });
     });
 

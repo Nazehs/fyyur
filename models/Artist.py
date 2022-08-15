@@ -16,9 +16,9 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(120))
     website_link = db.Column(db.String(120))
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=True)
-    upcoming_shows = db.relationship(
-        'Shows', lazy=True)
-    past_shows = db.relationship('Shows', lazy=True)
+    # upcoming_shows = db.relationship(
+    #     'Venue', secondary='shows', backref='venues', lazy=True)
+    upcoming_shows = db.relationship('Shows', lazy=True)
     # genres = db.relationship('Genre', secondary=table,
     #                          backref=db.backref('artists', lazy=True))
 

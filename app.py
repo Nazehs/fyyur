@@ -183,9 +183,11 @@ def delete_venue(venue_id):
     try:
         Venue.query.filter_by(id=venue_id).delete()
         db.session.commit()
+        flash('Venue was successfully deleted')
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         print(error)
+        flash('An error occurred. could not delete venue.')
     finally:
         db.session.close()
     return redirect(url_for('index'))
@@ -262,8 +264,6 @@ def edit_venue(venue_id):
 
 @ app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-    # TODO: take values from the form submitted, and update existing
-    # venue record with ID <venue_id> using the new attributes
     try:
         form = VenueForm(obj=request.form)
         data = dict(form.data)
@@ -333,10 +333,12 @@ def delete_artist(artist_id):
     try:
         Artist.query.filter_by(id=artist_id).delete()
         db.session.commit()
+        flash('Artist was successfully deleted')
     except SQLAlchemyError as e:
         error = str(e.__dict__['orig'])
         print(error)
         db.session.rollback()
+        flash('Oops! An error occurred. Artist could not be deleted.')
     finally:
         db.session.close()
     return redirect(url_for('index'))
