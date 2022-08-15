@@ -2,31 +2,22 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from distutils.log import error
-import json
 import os
-import re
-import secrets
-from typing import Set
 import dateutil.parser
 import babel
-# from sqlalchemy.dialects import postgresql
 from flask import render_template, request, flash, redirect, url_for
 from flask_moment import Moment
-# from flask_sqlalchemy import SQLAlchemy, inspect
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 import logging
 from logging import Formatter, FileHandler
-# from flask_wtf import Form
 from forms import *
 import sys
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 
-# app = Flask(__name__)
-# app = Flask(__name__, template_folder='templates')
+# models and database
 from models import app, db
 from models.Artist import Artist
 from models.Shows import Shows
@@ -36,7 +27,6 @@ app.config.from_object('config')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/band_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
-# db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 #----------------------------------------------------------------------------#
@@ -298,11 +288,8 @@ def create_artist_form():
 @ app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
     error = False
-    # called upon submitting the new artist listing form
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
-    form = ArtistForm(request.form)
     try:
+        form = ArtistForm(request.form)
         artist = Artist(
             name=form.name.data,
             city=form.city.data,
@@ -325,7 +312,7 @@ def create_artist_submission():
               request.form['name'] + ' could not be listed.')
     finally:
         db.session.close()
-    return render_template('pages/home.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/artist/<artist_id>', methods=['DELETE'])
@@ -425,7 +412,7 @@ def create_show_submission():
         print(sys.exc_info())
     finally:
         db.session.close()
-    return render_template('pages/home.html')
+    return redirect(url_for('index'))
 
 
 @ app.errorhandler(404)
