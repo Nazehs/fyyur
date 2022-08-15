@@ -37,8 +37,9 @@ content %}
     </div>
   </div>
   <div>
+    {% if recent_venues|length >0 %}
     <div class="row">
-      <p class="lead">Newly Added Cities</p>
+      <p class="lead">{{recent_venues|length}} Newly Added Cities</p>
       <ul class="items">
         {% for area in recent_venues %}
 
@@ -50,9 +51,9 @@ content %}
         {% endfor %}
       </ul>
     </div>
-    {% if recent_artists %}
+    {% endif %} {% if recent_artists|length >0 %}
     <div class="row mb-5 pb-5">
-      <p class="lead">Newly Added Artist</p>
+      <p class="lead">{{recent_artists|length}} Newly Added Artist</p>
       <ul class="items">
         {% for artist in recent_artists %}
 

@@ -17,12 +17,12 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean(), default=False)
     genres = db.Column(db.ARRAY(db.String))
     artist = db.relationship(
-        'Artist',  backref='venues')
+        'Artist',  back_populates='venues')
     upcoming_shows = db.relationship(
         'Shows', lazy=True, backref='venue', order_by='Shows.start_time')
 
     past_shows = db.relationship(
         'Shows', lazy=True,  order_by='Shows.start_time')
 
-    def __repr__(self) -> str:
-        return super().__repr__() + '<Venue {}>'.format(self.name)
+    def __repr__(self):
+        return '{0}'.format(self.name)

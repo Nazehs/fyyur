@@ -16,7 +16,11 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(120))
     website_link = db.Column(db.String(120))
     venue_id = db.Column(db.Integer, db.ForeignKey('venue.id'), nullable=True)
+    venues = db.relationship('Venue', back_populates='artist')
     upcoming_shows = db.relationship(
-        'Shows', lazy=True, order_by='Shows.start_time', back_populates='artist')
+        'Shows', lazy=True, order_by='Shows.start_time', back_populates='artist_name')
     past_shows = db.relationship(
-        'Shows', lazy=True, order_by='Shows.start_time', back_populates='artist')
+        'Shows', lazy=True, order_by='Shows.start_time', back_populates='artist_name')
+
+    def __repr__(self):
+        return ' {0}'.format(self.name)

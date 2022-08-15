@@ -29,30 +29,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'C2HWGVoMGfNTBsrYQg8EcMrdTimkZfAb'
 migrate = Migrate(app, db)
 
-#----------------------------------------------------------------------------#
-# Models.
-#----------------------------------------------------------------------------#
-
-
-# table = db.Table('genre_artist', db.Column('artist_id', db.Integer, db.ForeignKey(
-#     'artist.id')), db.Column('genre_id', db.Integer, db.ForeignKey('genre.id')))
-
-# # table2 = db.Table('genre', db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')), db.Column('venue_id', db.Integer, db.ForeignKey('venue.id')))
-
-
-# class Genre(db.Model):
-#     __tablename__ = 'genre'
-#     name = db.Column(db.String, nullable=False)
-#     id = db.Column(db.Integer, primary_key=True)
-
-#     def __repr__(self) -> str:
-#         return f'{0}'.format(self.name)
-
-
-#----------------------------------------------------------------------------#
-# Filters.
-#----------------------------------------------------------------------------#
-
 
 def format_datetime(value, format='medium'):
     date = dateutil.parser.parse(value)
@@ -273,15 +249,7 @@ def edit_venue_submission(venue_id):
 
 @ app.route('/artists/create', methods=['GET'])
 def create_artist_form():
-    # try:
     form = ArtistForm()
-    #     artist = Artist.create(form)
-    #     db.session.add(artist)
-    #     db.session.commit()
-    # except:
-    #     db.session.rollback()
-    # finally:
-    #     db.session.close()
     return render_template('forms/new_artist.html', form=form)
 
 
@@ -336,53 +304,7 @@ def delete_artist(artist_id):
 
 @ app.route('/shows')
 def shows():
-    # displays list of shows at /shows
-    # TODO: replace with real venues data.
-    data = [{
-        "venue_id": 1,
-        "venue_name": "The Musical Hop",
-        "artist_id": 4,
-        "artist_name": "Guns N Petals",
-        "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
-        "start_time": "2019-05-21T21:30:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 5,
-        "artist_name": "Matt Quevedo",
-        "artist_image_link": "https://images.unsplash.com/photo-1495223153807-b916f75de8c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80",
-        "start_time": "2019-06-15T23:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-01T20:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-08T20:00:00.000Z"
-    }, {
-        "venue_id": 3,
-        "venue_name": "Park Square Live Music & Coffee",
-        "artist_id": 6,
-        "artist_name": "The Wild Sax Band",
-        "artist_image_link": "https://images.unsplash.com/photo-1558369981-f9ca78462e61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=794&q=80",
-        "start_time": "2035-04-15T20:00:00.000Z"
-    }]
-
-
-# Shows.query.order_by('id').all()
     query = Shows.query.order_by('id').all()
-    for show in query:
-        print(show.toJSON())
-        print(show.artist_id)
-        print(show.venue_id)
-        print(show.start_time)
     return render_template('pages/shows.html', shows=query)
 
 
@@ -396,18 +318,20 @@ def create_shows():
 @ app.route('/shows/create', methods=['POST'])
 def create_show_submission():
     error = False
+    form = ShowForm(request.form)
     try:
         show = Shows(
-            artist_id=request.form['artist_id'],
-            venue_id=request.form['venue_id'],
-            start_time=request.form['start_time']
+            artist_id=form.artist_id.data,
+            venue_id=form.venue_id.data,
+            start_time=form.start_time.data
         )
         db.session.add(show)
         db.session.commit()
         flash('Show was successfully listed!')
-    except:
+    except SQLAlchemyError as e:
         error = True
         db.session.rollback()
+        print(e)
         flash('An error occurred. Show could not be listed.')
         print(sys.exc_info())
     finally:
