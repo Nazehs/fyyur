@@ -105,6 +105,23 @@ def show_venue(venue_id):
         Shows.artist_id == venue_id).filter(Shows.start_time < datetime.now()).all()
     upcoming_shows_query = db.session.query(Shows).join(Venue).filter(
         Shows.artist_id == venue_id).filter(Shows. start_time > datetime.now()).all()
+    past_shows_query = list(map(lambda x: x.toJSON(), past_shows_query))
+    upcoming_shows_query = list(
+        map(lambda x: x.toJSON(), upcoming_shows_query))
+    if len(past_shows_query) > 0:
+        for i, x in enumerate(past_shows_query):
+            artist = Artist.query.filter_by(id=x['artist_id']).first().toJSON()
+            past_shows_query[i]['venue_id'] = x['id']
+            past_shows_query[i]['artist_name'] = artist['name']
+            past_shows_query[i]['artist_image_link'] = artist['image_link']
+            past_shows_query[i]['start_time'] = x['start_time']
+    if len(upcoming_shows_query) > 0:
+        for i, x in enumerate(past_shows_query):
+            artist = Artist.query.filter_by(id=x['artist_id']).first().toJSON()
+            upcoming_shows_query[i]['venue_id'] = x['venue_id']
+            upcoming_shows_query[i]['artist_name'] = artist['name']
+            upcoming_shows_query[i]['artist_image_link'] = artist['image_link']
+            upcoming_shows_query[i]['start_time'] = x['start_time']
     query['past_shows'] = past_shows_query
     query['upcoming_shows'] = upcoming_shows_query
     query['past_shows_count'] = len(past_shows_query)
